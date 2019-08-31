@@ -99,8 +99,32 @@
       },
       handleRemove: function handleRemove(e) {
         e.preventDefault();
+        var $buttonRemove = e.target;
+        var plate =
+          $buttonRemove.parentElement.previousSibling.previousSibling.innerText;
+        app.removeCar(plate);
+        app.clearRow($buttonRemove);
+      },
+      removeCar: function removeCar(plate) {
+        var ajax = new XMLHttpRequest();
+        ajax.open("DELETE", "http://localhost:3000/car", true);
+        ajax.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        ajax.send("plate=" + plate);
+        ajax.addEventListener(
+          "readystatechange",
+          function() {
+            if (!app.isReady.call(this)) return;
+            app.getCars();
+          },
+          false
+        );
+      },
+      clearRow: function clearRow($element) {
         var $tableCar = $('[data-js="table-car"]').get();
-        $tableCar.removeChild(e.target.parentElement.parentElement);
+        $tableCar.removeChild($element.parentElement.parentElement);
       },
       companyInfo: function companyInfo() {
         var ajax = new XMLHttpRequest();
